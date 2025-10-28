@@ -1,0 +1,148 @@
+<style>
+    /* -------------------------------------- */
+    /* CSS: จัดรูปแบบ Card และ Grid Layout */
+    /* -------------------------------------- */
+    body { font-family: Tahoma, sans-serif; background-color: #f5e5e5ff; padding: 20px; }
+    h1 { color: #2c3e50; border-bottom: 3px solid #ccc; padding-bottom: 15px; margin-bottom: 30px; }
+    h2 { margin-top: 0; color: #34495e; }
+    
+    .restaurant-grid {
+        display: grid;
+        /* แสดง 2 คอลัมน์สำหรับเดสก์ท็อป */
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); 
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    .card {
+        background-color: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        overflow: hidden; /* ซ่อนส่วนที่ล้นออกมา */
+        transition: transform 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-5px); /* เอฟเฟกต์ยกตัวเมื่อชี้เมาส์ */
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .card-image img {
+        width: 100%;
+        height: 250px; /* กำหนดความสูงของรูปภาพ */
+        object-fit: cover; /* ครอบตัดรูปภาพให้เต็มพื้นที่ */
+    }
+
+    .card-content {
+        padding: 20px;
+    }
+    
+    .category-tag { 
+        display: inline-block; 
+        padding: 5px 10px; 
+        border-radius: 5px; 
+        color: white; 
+        font-weight: bold; 
+        margin-bottom: 10px;
+        font-size: 0.9em;
+    }
+    .tag-ดัง { background-color: #e74c3c; } 
+    .tag-ลับ { background-color: #2ecc71; } 
+
+    .review-box { 
+        margin-top: 15px; 
+        padding: 10px; 
+        border-left: 4px solid #3498db; 
+        background-color: #ecf0f1; 
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .rating { color: gold; font-size: 1.3em; }
+</style>
+
+<h1>แนะนำร้านอาหารในจังหวัดราชบุรี</h1>
+
+<h2 style="color: #e74c3c;">ร้านดัง</h2>
+<div class="restaurant-grid">
+    {% for restaurant in restaurants %}
+        {% if restaurant.category == "ร้านดัง" %}
+            <div class="card">
+                <div class="card-image">
+                    <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }} Image">
+                </div>
+                
+                <div class="card-content">
+                    <div class="category-tag tag-ดัง">ร้านดัง</div>
+                    <h2><a href="{% url 'detail' restaurant.id %}" style="color: inherit; text-decoration: none;">
+                        {{ restaurant.name }} ({{ restaurant.location }})
+                    </a></h2>
+                    
+                    <p><strong>เวลาเปิด-ปิด:</strong> {{ restaurant.hours }}</p>
+                    <p><strong>ที่ตั้ง:</strong> {{ restaurant.address }}</p>
+
+                    <p>
+                        <strong>เรตติ้ง:</strong> 
+                        <span class="rating">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= restaurant.rating|floatformat:"0" %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                        </span> 
+                        ({{ restaurant.rating }} / 5.0)
+                    </p>
+                    
+                    <div class="review-box">
+                        <strong>ความคิดเห็นจากลูกค้า:</strong>
+                        {% for review in restaurant.reviews|slice:":1" %} <p><em>"{{ review.comment }}"</em> - {{ review.user }}</p>
+                        {% empty %}
+                            <p style="color: gray;">ยังไม่มีรีวิว</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<hr style="border: 0; height: 1px; background-color: #ccc; margin: 40px 0;">
+
+<h2 style="color: #2ecc71;">ร้านลับ</h2>
+<div class="restaurant-grid">
+    {% for restaurant in restaurants %}
+        {% if restaurant.category == "ร้านลับ" %}
+            <div class="card">
+                <div class="card-image">
+                    <img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }} Image">
+                </div>
+                
+                <div class="card-content">
+                    <div class="category-tag tag-ลับ">ร้านลับ</div>
+                     <h2><a href="{% url 'detail' restaurant.id %}" style="color: inherit; text-decoration: none;">
+                        {{ restaurant.name }} ({{ restaurant.location }})
+                    </a></h2>
+                    
+                    <p><strong>เวลาเปิด-ปิด:</strong> {{ restaurant.hours }}</p>
+                    <p><strong>ที่ตั้ง:</strong> {{ restaurant.address }}</p>
+
+                    <p>
+                        <strong>เรตติ้ง:</strong> 
+                        <span class="rating">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= restaurant.rating|floatformat:"0" %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                        </span> 
+                        ({{ restaurant.rating }} / 5.0)
+                    </p>
+                    
+                    <div class="review-box">
+                        <strong>ความคิดเห็นจากลูกค้า:</strong>
+                        {% for review in restaurant.reviews|slice:":1" %} <p><em>"{{ review.comment }}"</em> - {{ review.user }}</p>
+                        {% empty %}
+                            <p style="color: gray;">ยังไม่มีรีวิว</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

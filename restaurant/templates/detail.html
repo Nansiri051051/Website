@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ restaurant.name }} ({{ restaurant.location }})</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #333;
+            margin: 0;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .rating-stars {
+            color: orange;
+        }
+        .info-label {
+            font-weight: bold;
+        }
+        .food-gallery {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .gallery-container {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .food-image {
+            flex-shrink: 0;
+            width: 250px;
+            height: 180px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            text-align: center;
+        }
+        .food-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .food-image span {
+            display: block;
+            margin-top: 5px;
+            color: #777;
+        }
+        .reviews {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .review-box {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        /* Style สำหรับลิงก์ที่ตั้ง */
+        .location-link {
+            text-decoration: underline;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="{% url 'index' %}" class="back-link">← กลับสู่หน้าร้านอาหาร</a>
+
+    <div class="header">
+        <h1>{{ restaurant.name }} ({{ restaurant.location }})</h1>
+    </div>
+
+    <div class="info-item">
+        <span class="info-label">ประเภท:</span> 
+        {{ restaurant.category }} |
+        <span class="info-label">เรตติ้ง:</span>
+        <span class="rating-stars">{% for i in "12345" %}{% if forloop.counter <= restaurant.rating|floatformat:0 %}★{% else %}☆{% endif %}{% endfor %}</span>
+        ({{ restaurant.rating|floatformat:1 }}/5.0)
+    </div>
+
+    <div class="info-item">
+        <span class="info-label">เวลาเปิด-ปิด:</span> {{ restaurant.hours }}
+    </div>
+
+    <div class="info-item">
+        <span class="info-label">ที่ตั้ง:</span>
+        <a href="https://www.google.com/maps/search/?api=1&query={{ restaurant.name }} {{ restaurant.address }}" target="_blank" class="location-link">
+            {{ restaurant.address }} (คลิกเพื่อดูเส้นทาง)
+        </a>
+    </div>
+
+    <div class="food-gallery">
+        <h2>เมนูอาหารที่แนะนำ</h2>
+        <div class="gallery-container">
+            {% for image_url in restaurant.food_images %}
+                <div class="food-image">
+                    <img src="{{ image_url }}" alt="รูปภาพอาหารของร้าน">
+                    <span>รูปภาพที่ {{ forloop.counter }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="reviews">
+        <h2>ความคิดเห็นจากลูกค้าทั้งหมด ({{ restaurant.reviews|length }} รีวิว)</h2>
+        {% for review in restaurant.reviews %}
+            <div class="review-box">
+                <p>"{{ review.comment }}"</p>
+                <small>- {{ review.user }}</small>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>
