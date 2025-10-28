@@ -1,5 +1,2 @@
-# .gitignore
-*.sqlite3
-venv/
-__pycache__/
-*.pyc
+# Created by venv; see https://docs.python.org/3/library/venv.html
+*
